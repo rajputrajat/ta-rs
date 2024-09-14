@@ -1,6 +1,9 @@
 mod exponential_moving_average;
 pub use self::exponential_moving_average::ExponentialMovingAverage;
 
+mod relative_moving_average;
+pub use self::relative_moving_average::RelativeMovingAverage;
+
 mod weighted_moving_average;
 pub use self::weighted_moving_average::WeightedMovingAverage;
 
@@ -15,6 +18,9 @@ pub use self::mean_absolute_deviation::MeanAbsoluteDeviation;
 
 mod relative_strength_index;
 pub use self::relative_strength_index::RelativeStrengthIndex;
+
+mod relative_strength_index_tv;
+pub use self::relative_strength_index_tv::RelativeStrengthIndexTv;
 
 mod minimum;
 pub use self::minimum::Minimum;

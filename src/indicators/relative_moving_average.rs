@@ -52,23 +52,23 @@ use serde::{Deserialize, Serialize};
 /// * [Exponential moving average, Wikipedia](https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average)
 ///
 
-#[doc(alias = "EMA")]
+#[doc(alias = "RMA")]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone)]
-pub struct ExponentialMovingAverage {
+pub struct RelativeMovingAverage {
     period: usize,
     k: f64,
     current: f64,
     is_new: bool,
 }
 
-impl ExponentialMovingAverage {
+impl RelativeMovingAverage {
     pub fn new(period: usize) -> Result<Self> {
         match period {
             0 => Err(TaError::InvalidParameter),
             _ => Ok(Self {
                 period,
-                k: 1.0 / (period) as f64,
+                k: 2.0 / (period + 1) as f64,
                 current: 0.0,
                 is_new: true,
             }),
@@ -76,13 +76,13 @@ impl ExponentialMovingAverage {
     }
 }
 
-impl Period for ExponentialMovingAverage {
+impl Period for RelativeMovingAverage {
     fn period(&self) -> usize {
         self.period
     }
 }
 
-impl Next<f64> for ExponentialMovingAverage {
+impl Next<f64> for RelativeMovingAverage {
     type Output = f64;
 
     fn next(&mut self, input: f64) -> Self::Output {
@@ -96,7 +96,7 @@ impl Next<f64> for ExponentialMovingAverage {
     }
 }
 
-impl<T: Close> Next<&T> for ExponentialMovingAverage {
+impl<T: Close> Next<&T> for RelativeMovingAverage {
     type Output = f64;
 
     fn next(&mut self, input: &T) -> Self::Output {
@@ -104,22 +104,22 @@ impl<T: Close> Next<&T> for ExponentialMovingAverage {
     }
 }
 
-impl Reset for ExponentialMovingAverage {
+impl Reset for RelativeMovingAverage {
     fn reset(&mut self) {
         self.current = 0.0;
         self.is_new = true;
     }
 }
 
-impl Default for ExponentialMovingAverage {
+impl Default for RelativeMovingAverage {
     fn default() -> Self {
         Self::new(9).unwrap()
     }
 }
 
-impl fmt::Display for ExponentialMovingAverage {
+impl fmt::Display for RelativeMovingAverage {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "EMA({})", self.period)
+        write!(f, "RMA({})", self.period)
     }
 }
 
